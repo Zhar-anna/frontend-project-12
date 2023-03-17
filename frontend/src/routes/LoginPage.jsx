@@ -1,11 +1,15 @@
 import { useFormik } from 'formik';
-// import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import React, { useRef } from 'react';
 import * as yup from 'yup';
 import {
   Button, Form, FloatingLabel,
 } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import tota from '../images/Tota.jpg';
+import { useAuth } from '../context/index.jsx';
+import routes from '../routes.js';
 
 const validationSchema = yup.object().shape({
   username: yup.string().trim(),
@@ -13,16 +17,39 @@ const validationSchema = yup.object().shape({
 });
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { logIn } = useAuth();
+  const inputRef = useRef();
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     validationSchema,
-    // onSubmit: values => {
-    //   alert(JSON.stringify(values, null, 2));
-    // },
+    onSubmit: async (values, actions) => {
+      try {
+        const { data } = await axios.post(routes.login, values);
+        if (data.token) {
+          const user = { token: data.token, username: data.username };
+          logIn(user);
+          navigate(routes.homePage);
+        }
+      } catch (error) {
+        console.error(error);
+        if (!error.isAxiosError) {
+          toast.error('Неизвестная ошибка');
+          return;
+        }
+        if (error.responce?.status === 401) {
+          actions.setFieldError('authentification', 'auth');
+          inputRef.current.select();
+        } else {
+          toast.error('Ошибка сети');
+        }
+      }
+    },
   });
+
   return (
     <div className="container-fluid h-100">
       <div className="row justify-content-center align-content-center h-100">
@@ -39,7 +66,7 @@ const LoginPage = () => {
               <Form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
                 <h1 className="text-center mb-4">Войти</h1>
                 <Form.Group className="form-floating mb-3" controlId="username">
-                  <FloatingLabel controlId="floatingUsername">
+                  <FloatingLabel className={formik.values.username && 'filled'} controlId="floatingUsername">
                     <Form.Control
                       name="usernsme"
                       type="username"
@@ -48,18 +75,27 @@ const LoginPage = () => {
                       placeholder="Ваш ник"
                       autoComplete="username"
                       required
+                      autoFocus
+                      isInvalid={formik.errors.authentification}
+                      ref={inputRef}
                     />
                   </FloatingLabel>
-                  <FloatingLabel controlId="floatingPassword">
+                </Form.Group>
+                <Form.Group className="form-floating mb-4" controlId="password">
+                  <FloatingLabel lassName={formik.values.password && 'filled'} controlId="floatingPassword">
                     <Form.Control
                       name="password"
                       type="password"
                       autoComplete="current-password"
                       placeholder="Пароль"
                       required
+                      isInvalid={formik.errors.authentification}
                       onChange={formik.handleChange}
                       value={formik.values.password}
                     />
+                    <Form.Control.Feedback type="invalid" tooltip>
+                      {formik.errors.authentication && 'Неверный логин или пароль'}
+                    </Form.Control.Feedback>
                   </FloatingLabel>
                 </Form.Group>
                 <Button className="w-100 mb-3" type="submit">Войти</Button>
@@ -68,7 +104,8 @@ const LoginPage = () => {
             <div className="card-footer p-4">
               <div className="text-center">
                 <span>Нет аккаунта?</span>
-                <Link to="/login">Регистрация</Link>
+                { ' ' }
+                <Link to={routes.signupPage}>Регистрация</Link>
               </div>
             </div>
           </div>
