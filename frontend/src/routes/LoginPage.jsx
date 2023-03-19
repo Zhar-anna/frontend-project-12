@@ -8,7 +8,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import tota from '../images/Tota.jpg';
-import { useAuth } from '../context/index.jsx';
+import { useAuth } from '../contexts/index.jsx';
 import routes from '../routes.js';
 
 const validationSchema = yup.object().shape({
@@ -31,6 +31,7 @@ const LoginPage = () => {
         const { data } = await axios.post(routes.login, values);
         if (data.token) {
           const user = { token: data.token, username: data.username };
+          // localStorage.setItem('token', data.token);
           logIn(user);
           navigate(routes.homePage);
         }
@@ -70,19 +71,19 @@ const LoginPage = () => {
                     <Form.Control
                       name="usernsme"
                       type="username"
-                      onChange={formik.handleChange}
-                      value={formik.values.username}
                       placeholder="Ваш ник"
                       autoComplete="username"
                       required
                       autoFocus
                       isInvalid={formik.errors.authentification}
+                      onChange={formik.handleChange}
+                      // value={formik.values.username}
                       ref={inputRef}
                     />
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="form-floating mb-4" controlId="password">
-                  <FloatingLabel lassName={formik.values.password && 'filled'} controlId="floatingPassword">
+                  <FloatingLabel className={formik.values.password && 'filled'} controlId="floatingPassword">
                     <Form.Control
                       name="password"
                       type="password"
@@ -98,7 +99,7 @@ const LoginPage = () => {
                     </Form.Control.Feedback>
                   </FloatingLabel>
                 </Form.Group>
-                <Button className="w-100 mb-3" type="submit">Войти</Button>
+                <Button className="w-100 mb-3" variant="outline-primary" type="submit">Войти</Button>
               </Form>
             </div>
             <div className="card-footer p-4">
