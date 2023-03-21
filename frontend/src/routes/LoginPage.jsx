@@ -8,7 +8,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import tota from '../images/Tota.jpg';
-import { useAuth } from '../contexts/index.jsx';
+// import { useAuth } from '../contexts/index.jsx';
 import routes from '../routes.js';
 
 const validationSchema = yup.object().shape({
@@ -17,7 +17,8 @@ const validationSchema = yup.object().shape({
 });
 
 const useSubmit = (setAuthFailed) => {
-  const { logIn } = useAuth();
+  // const { logIn } = useAuth();
+  // const auth = useAuth();
   const navigate = useNavigate();
   // const inputRef = useRef();
   return async (values) => {
@@ -25,8 +26,9 @@ const useSubmit = (setAuthFailed) => {
     try {
       const { data } = await axios.post(routes.login, values);
       if (data.token) {
-        const user = { token: data.token, username: data.username };
-        logIn(user);
+        // const user = { token: data.token, username: data.username };
+        // auth.userLogIn(user);
+        // logIn(user);
         localStorage.setItem('token', JSON.stringify(data.token));
         navigate(routes.homePage);
       }
@@ -79,7 +81,7 @@ const LoginPage = () => {
                 <fieldset disabled={formik.isSubmitting}>
                   <Form.Group className="form-floating mb-3" controlId="username">
                     <Form.Control
-                      name="usernsme"
+                      name="username"
                       type="username"
                       placeholder="Ваш ник"
                       autoComplete="username"
