@@ -1,5 +1,10 @@
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import channelsReducer from './channelsSlice.js';
 
-export default {
+const reducer = combineReducers({
   channels: channelsReducer,
-};
+});
+
+export default configureStore({
+  reducer,
+});
