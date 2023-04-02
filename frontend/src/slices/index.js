@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import channelsReducer from './channelsSlice.js';
+import channelsReducer from './channelSlices.js';
 
 const reducer = combineReducers({
   channels: channelsReducer,
