@@ -8,6 +8,10 @@ const channelsSlice = createSlice({
   initialState,
   reducers: {
     setChannels: channelsAdapter.setAll,
+    addChannels: channelsAdapter.addMany,
+    addChannel: channelsAdapter.addOne,
+    updateChannel: channelsAdapter.updateOne,
+    removeChannel: channelsAdapter.removeOne,
   },
 });
 
