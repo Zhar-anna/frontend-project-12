@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/Zhar-anna/frontend-project-12#readme",
   "dependencies": {
-    "@hexlet/chat-server": "^1.1.6"
+    "@hexlet/chat-server": "^1.1.6",
+    "@rollbar/react": "^0.11.1",
+    "rollbar": "^2.26.1"
   },
   "devDependencies": {
     "prettier": "2.8.4"
