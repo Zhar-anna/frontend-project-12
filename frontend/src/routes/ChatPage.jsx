@@ -129,7 +129,7 @@ const RightCol = ({
             {currentChannel?.name}
           </b>
         </p>
-        <span className="text-muted">тут ошибка</span>
+        <span className="text-muted">Количество сообщений</span>
       </div>
       <MessagesBox
         currentChannelMessages={currentChannelMessages}

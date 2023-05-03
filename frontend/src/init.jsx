@@ -43,7 +43,7 @@ export default async () => {
     newMessage: (...args) => getSocketEmitPromise('newMessage', ...args),
   };
   const rollbarConfig = {
-    accessToken: process.env.REACT_APP_ROLLBAR_TOKEN,
+    accessToken: 'POST_CLIENT_ITEM_ACCESS_TOKEN',
     environment: 'production',
   };
   return (
