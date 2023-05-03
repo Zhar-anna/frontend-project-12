@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ErrorBoundary, Provider as RollbarProvider } from '@rollbar/react';
 import App from './App.jsx';
-import { addMessage } from './slices/MessageSlices.js';
+import { actions as messagesActions } from './slices/MessageSlices.js';
 // import { actions as channelsActions } from './slices/channelSlices.js';
 import { ChatApiContext } from './contexts/index.jsx';
 import store from './slices/index.js';
@@ -31,7 +31,7 @@ export default async () => {
 
     .on('newMessage', (payload) => {
       console.debug('newMessage "event"', payload);
-      store.dispatch(addMessage(payload));
+      store.dispatch(messagesActions.addMessage(payload));
     });
   const getSocketEmitPromise = (...args) => new Promise((resolve, reject) => {
     socket.timeout(socketTimeoutMs).emit(...args, (err, response) => {
