@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
-// import { actions as channelsActions } from './channelSlices.js';
+import { actions as channelsActions } from './channelSlices.js';
 
 const defaultChannelId = 1;
 
@@ -19,6 +19,13 @@ const currentChannelIdSlice = createSlice({
     setCurrentChannelId: (state, action) => {
       state.value = action.payload;
     },
+  },
+    extraReducers: (builder) => {
+    builder
+      .addCase(channelsActions.removeChannel, (state, action) => {
+        const removedChannelId = action.payload;
+        if (state.value === removedChannelId) state.value = defaultChannelId;
+      });
   },
 });
 
