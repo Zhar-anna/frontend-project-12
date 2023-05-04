@@ -43,7 +43,8 @@ export default async () => {
     newMessage: (...args) => getSocketEmitPromise('newMessage', ...args),
   };
   const rollbarConfig = {
-    accessToken: 'POST_CLIENT_ITEM_ACCESS_TOKEN',
+    accessToken: '30c8dfe987dc44809bfa1796486cf0a7',
+    captureUncaught: true,
     environment: 'production',
   };
   return (
