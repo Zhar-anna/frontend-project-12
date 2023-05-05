@@ -18,7 +18,6 @@ const LeftCol = ({
   channels, currentChannelId,
 }) => {
   const dispatch = useDispatch();
-  // console.log(channels);
   return (
     <Col md={2} className="col-4 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
