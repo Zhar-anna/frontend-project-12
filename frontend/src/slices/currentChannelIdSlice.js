@@ -20,7 +20,7 @@ const currentChannelIdSlice = createSlice({
       state.value = action.payload;
     },
   },
-    extraReducers: (builder) => {
+  extraReducers: (builder) => {
     builder
       .addCase(channelsActions.removeChannel, (state, action) => {
         const removedChannelId = action.payload;
