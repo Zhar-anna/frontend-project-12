@@ -1,4 +1,3 @@
-// import Image from 'react-bootstrap/Image';
 import { Link } from 'react-router-dom';
 import logo from '../images/404.svg';
 

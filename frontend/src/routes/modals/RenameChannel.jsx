@@ -4,14 +4,13 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Stack from 'react-bootstrap/Stack';
-import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-import { useChatApi } from '../../hooks/index.jsx';
+import { useChatApi } from '../../contexts/index.jsx';
 
 const validationSchema = (channelNames) => Yup.object().shape({
   channelName: Yup.string().trim()
-  .notOneOf(channelNames, 'Must be unique'),
+    .notOneOf(channelNames, 'Must be unique'),
 });
 
 const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
@@ -54,7 +53,6 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
                 <Form.Control
                   ref={inputRef}
                   onChange={formik.handleChange}
-                  // onBlur={f.handleBlur}
                   value={formik.values.channelName}
                   data-testid="input-channelName"
                   name="channelName"
@@ -75,3 +73,5 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
     </Modal>
   );
 };
+
+export default Rename;
