@@ -6,15 +6,27 @@ import { io } from 'socket.io-client';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ErrorBoundary, Provider as RollbarProvider } from '@rollbar/react';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
+import i18next from 'i18next';
+import resources from './locales/index.js';
 import App from './App.jsx';
 import { actions as messagesActions } from './slices/MessageSlices.js';
 import { actions as channelsActions } from './slices/channelSlices.js';
 import { ChatApiContext } from './contexts/index.jsx';
 import store from './slices/index.js';
 
+const defaultLanguage = 'ru';
 const socketTimeoutMs = 5000;
 
 export default async () => {
+  const i18nextInstance = i18next.createInstance();
+  await i18nextInstance
+    .use(initReactI18next)
+    .init({
+      lng: defaultLanguage,
+      debug: false,
+      resources,
+    });
   const socket = io();
   console.debug(`Subscribe for socket events (socket.id=${socket.id})`);
   socket
@@ -66,15 +78,17 @@ export default async () => {
     environment: 'production',
   };
   return (
-    <RollbarProvider config={rollbarConfig}>
-      <ErrorBoundary>
-        <Provider store={store}>
-          <ChatApiContext.Provider value={chatApi}>
-            <App />
-            <ToastContainer pauseOnFocusLoss={false} position="top-center" />
-          </ChatApiContext.Provider>
-        </Provider>
-      </ErrorBoundary>
-    </RollbarProvider>
+    <I18nextProvider i18n={i18nextInstance}>
+      <RollbarProvider config={rollbarConfig}>
+        <ErrorBoundary>
+          <Provider store={store}>
+            <ChatApiContext.Provider value={chatApi}>
+              <App />
+              <ToastContainer pauseOnFocusLoss={false} position="top-center" />
+            </ChatApiContext.Provider>
+          </Provider>
+        </ErrorBoundary>
+      </RollbarProvider>
+    </I18nextProvider>
   );
 };

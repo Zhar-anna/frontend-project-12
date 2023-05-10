@@ -3,6 +3,7 @@ import {
   BrowserRouter, Routes, Route, Link, Navigate,
 } from 'react-router-dom';
 import { Navbar, Container, Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import ErrorPage from './routes/ErrorPage.jsx';
 import LoginPage from './routes/LoginPage.jsx';
 import ChatPage from './routes/ChatPage.jsx';
@@ -38,7 +39,8 @@ const PrivateRoute = ({ children }) => {
 };
 const AuthButton = () => {
   const auth = useAuth();
-  return auth.userData && <Button onClick={auth.logOut}>Выйти</Button>;
+  const { t } = useTranslation();
+  return auth.userData && <Button onClick={auth.logOut}>{t('login.logout')}</Button>;
 };
 
 const App = () => (
