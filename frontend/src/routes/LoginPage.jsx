@@ -5,18 +5,14 @@ import * as yup from 'yup';
 import {
   Button, Form,
 } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import tota from '../images/Tota.jpg';
 import { useAuth } from '../contexts/index.jsx';
 import routes from '../routes.js';
 
-const validationSchema = yup.object().shape({
-  username: yup.string().trim(),
-  password: yup.string().trim(),
-});
-
-const useSubmit = (setAuthFailed) => {
+const useSubmit = (setAuthFailed, t) => {
   const { logIn } = useAuth();
   const navigate = useNavigate();
   const inputRef = useRef();
@@ -32,19 +28,28 @@ const useSubmit = (setAuthFailed) => {
       }
     } catch (error) {
       if (!error.isAxiosError) {
-        toast.error('Неизвестная ошибка');
+        toast.error(t('notFoundError'));
         console.error(error);
       }
       if (error.isAxiosError && error.response?.status === 401) {
         setAuthFailed(true);
         inputRef.current.select();
       } else {
-        toast.error('Ошибка сети');
+        toast.error(t('connectionError'));
       }
     }
   };
 };
 const LoginPage = () => {
+  const { t } = useTranslation();
+  const validationSchema = yup.object().shape({
+    username: yup.string().trim()
+      .min(3, t('login.symbolCount'))
+      .max(20, t('login.symbolCount'))
+      .required(t('login.requiredField')),
+    password: yup.string().trim()
+      .required(t('login.requiredField')),
+  });
   const [authFailed, setAuthFailed] = useState(false);
   const inputRef = useRef();
 
@@ -58,7 +63,7 @@ const LoginPage = () => {
       password: '',
     },
     validationSchema,
-    onSubmit: useSubmit(setAuthFailed),
+    onSubmit: useSubmit(setAuthFailed, t),
   });
 
   return (
@@ -75,13 +80,13 @@ const LoginPage = () => {
                 />
               </div>
               <Form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
-                <h1 className="text-center mb-4">Войти</h1>
+                <h1 className="text-center mb-4">{t('login.login')}</h1>
                 <fieldset disabled={formik.isSubmitting}>
                   <Form.Group className="form-floating mb-3" controlId="username">
                     <Form.Control
                       name="username"
                       type="username"
-                      placeholder="Ваш ник"
+                      placeholder={t('login.nick')}
                       autoComplete="username"
                       required
                       autoFocus
@@ -90,14 +95,14 @@ const LoginPage = () => {
                       value={formik.values.username}
                       ref={inputRef}
                     />
-                    <Form.Label className="form-label">Ваш ник</Form.Label>
+                    <Form.Label className="form-label">{t('login.nick')}</Form.Label>
                   </Form.Group>
                   <Form.Group className="form-floating mb-4" controlId="password">
                     <Form.Control
                       name="password"
                       type="password"
                       autoComplete="current-password"
-                      placeholder="Пароль"
+                      placeholder={t('login.password')}
                       required
                       isInvalid={authFailed || (formik.touched.password && formik.errors.password)}
                       onChange={formik.handleChange}
@@ -105,18 +110,18 @@ const LoginPage = () => {
                     />
                     <Form.Label className="form-label">Пароль</Form.Label>
                     <Form.Control.Feedback type="invalid" tooltip>
-                      Неверные имя пользователя или пароль
+                      {t('login.invalidUP')}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <Button className="w-100 mb-3" variant="outline-primary" type="submit">Войти</Button>
+                  <Button className="w-100 mb-3" variant="outline-primary" type="submit">{t('login.login')}</Button>
                 </fieldset>
               </Form>
             </div>
             <div className="card-footer p-4">
               <div className="text-center">
-                <span>Нет аккаунта?</span>
+                <span>{t('login.haventAcc')}</span>
                 { ' ' }
-                <Link to={routes.signupPage}>Регистрация</Link>
+                <Link to={routes.signupPage}>{t('login.registration')}</Link>
               </div>
             </div>
           </div>

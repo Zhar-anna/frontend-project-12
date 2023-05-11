@@ -47,18 +47,18 @@ export default async () => {
     .on('newChannel', (payload) => {
       console.debug('newChannel "event"', payload);
       store.dispatch(channelsActions.addChannel(payload));
-      toast.info('Канал создан');
+      toast.info(i18nextInstance.t('channels.created'));
     })
     .on('removeChannel', (payload) => {
       console.debug('removeChannel "event"', payload);
       store.dispatch(channelsActions.removeChannel(payload.id));
-      toast.info('Канал удалён');
+      toast.info(i18nextInstance.t('channels.remove'));
     })
     .on('renameChannel', (payload) => {
       console.debug('renameChannel "event"', payload);
       const { id, name } = payload;
       store.dispatch(channelsActions.updateChannel({ id, changes: { name } }));
-      toast.info('Канал переименован');
+      toast.info(i18nextInstance.t('channels.renamed'));
     });
   const getSocketEmitPromise = (...args) => new Promise((resolve, reject) => {
     socket.timeout(socketTimeoutMs).emit(...args, (err, response) => {

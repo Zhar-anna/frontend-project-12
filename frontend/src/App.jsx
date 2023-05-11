@@ -43,32 +43,35 @@ const AuthButton = () => {
   return auth.userData && <Button onClick={auth.logOut}>{t('login.logout')}</Button>;
 };
 
-const App = () => (
-  <AuthProvider>
-    <BrowserRouter>
-      <div className="d-flex flex-column vh-100">
-        <Navbar className="shadow-sm navbar-expand-lg navbar-light bg-white">
-          <Container>
-            <Navbar.Brand as={Link} to={routes.homePage}>Hexlet Chat</Navbar.Brand>
-            <AuthButton />
-          </Container>
-        </Navbar>
-        <Routes>
-          <Route path="*" element={<ErrorPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route
-            path="/"
-            element={(
-              <PrivateRoute>
-                <ChatPage />
-              </PrivateRoute>
-            )}
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  </AuthProvider>
-);
+const App = () => {
+  const { t } = useTranslation();
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="d-flex flex-column vh-100">
+          <Navbar className="shadow-sm navbar-expand-lg navbar-light bg-white">
+            <Container>
+              <Navbar.Brand as={Link} to={routes.homePage}>{t('chat')}</Navbar.Brand>
+              <AuthButton />
+            </Container>
+          </Navbar>
+          <Routes>
+            <Route path="*" element={<ErrorPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route
+              path="/"
+              element={(
+                <PrivateRoute>
+                  <ChatPage />
+                </PrivateRoute>
+              )}
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+};
 
 export default App;
