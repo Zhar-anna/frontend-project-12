@@ -8,6 +8,7 @@ import {
 import axios from 'axios';
 import { animateScroll } from 'react-scroll';
 import profanityFilter from 'leo-profanity';
+import { useTranslation } from 'react-i18next';
 import routes from '../routes.js';
 import { useAuth, useChatApi } from '../contexts/index.jsx';
 import { actions as channelsActions, selectors as channelsSelectors } from '../slices/channelSlices.js';
@@ -27,13 +28,13 @@ const renderModal = ({ modalInfo, hideModal, channels }) => {
   );
 };
 const LeftCol = ({
-  channels, currentChannelId, showModal,
+  channels, currentChannelId, showModal, t,
 }) => {
   const dispatch = useDispatch();
   return (
     <Col md={2} className="col-4 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
-        <span>Каналы</span>
+        <span>{t('channels.channels')}</span>
         <button onClick={() => showModal('newChannel')} type="button" className="p-0 text-primary btn btn-group-vertical">
           <PlusSquareFill size={20} />
           <span className="visually-hidden">+</span>
@@ -56,12 +57,14 @@ const LeftCol = ({
                   split
                   variant={channel.id === currentChannelId && 'secondary'}
                 >
-                  <span className="visually-hidden">Действия с каналом</span>
+                  <span className="visually-hidden">{t('channels.action')}</span>
                 </Dropdown.Toggle>
               )}
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => showModal('removeChannel', channel)}>Удалить</Dropdown.Item>
-                <Dropdown.Item onClick={() => showModal('renameChannel', channel)}>Переименовать</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('removeChannel', channel)}>
+                  {t('channels.delete')}
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('renameChannel', channel)}>{t('channels.rename')}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </li>
@@ -85,7 +88,7 @@ const MessagesBox = ({ currentChannelMessages }) => {
     </div>
   );
 };
-const SendingForm = ({ currentChannel, username }) => {
+const SendingForm = ({ t, currentChannel, username }) => {
   const chatApi = useChatApi();
   const [isSubmitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -123,7 +126,7 @@ const SendingForm = ({ currentChannel, username }) => {
             <input
               name="body"
               aria-label="Новое сообщение"
-              placeholder="Введите своё сообщение"
+              placeholder={t('messages.enterMessage')}
               className="border-0 p-0 ps-2 form-control"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -131,7 +134,7 @@ const SendingForm = ({ currentChannel, username }) => {
             />
             <button type="submit" disabled="" className="btn btn-group-vertical">
               <ArrowRightSquareFill size={20} />
-              <span className="visually-hidden">Отправить</span>
+              <span className="visually-hidden">{t('messages.send')}</span>
             </button>
           </div>
         </fieldset>
@@ -141,23 +144,23 @@ const SendingForm = ({ currentChannel, username }) => {
 };
 
 const RightCol = ({
-  currentChannel, currentChannelMessages, username,
+  currentChannel, currentChannelMessages, username, t,
 }) => (
   <Col className="p-0 h-100">
     <div className="d-flex flex-column h-100">
       <div className="bg-light mb-4 p-3 shadow-sm small">
         <p className="m-0">
           <b>
-            #
-            {currentChannel?.name}
+            {`# ${currentChannel?.name}`}
           </b>
         </p>
-        <span className="text-muted">Количество сообщений</span>
+        <span className="text-muted">{t('messages.messagesCount', { count: currentChannelMessages.length })}</span>
       </div>
       <MessagesBox
         currentChannelMessages={currentChannelMessages}
       />
       <SendingForm
+        t={t}
         currentChannel={currentChannel}
         username={username}
       />
@@ -172,6 +175,7 @@ const getAuthHeader = (userData) => (
 const ChatPage = () => {
   const auth = useAuth();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const channels = useSelector(channelsSelectors.selectAll);
   const currentChannelId = useSelector((state) => state.currentChannelId.value);
@@ -191,12 +195,12 @@ const ChatPage = () => {
         if (!err.isAxiosError) throw err;
         console.error(err);
         if (err.response?.status === 401) auth.logOut();
-        else toast.error('Ошибка соединения');
+        else toast.error(t('connectionError'));
       }
     };
     console.debug('ChatPage fetching content...');
     fetchContent();
-  }, [auth, dispatch]);
+  }, [auth, dispatch, t]);
 
   const [modalInfo, setModalInfo] = useState({ type: null, item: null });
   const hideModal = () => setModalInfo({ type: null, item: null });
@@ -209,11 +213,13 @@ const ChatPage = () => {
           channels={channels}
           currentChannelId={currentChannelId}
           showModal={showModal}
+          t={t}
         />
         <RightCol
           currentChannel={currentChannel}
           currentChannelMessages={currentChannelMessages}
           username={auth.userData.username}
+          t={t}
         />
       </Row>
       {renderModal({ modalInfo, hideModal, channels })}

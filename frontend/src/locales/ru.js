@@ -10,6 +10,7 @@ export default {
     },
     channels: {
       channels: 'Каналы',
+      channel: 'Канал',
       delete: 'Удалить',
       deleteChannel: 'Удалить канал',
       rename: 'Переименовать',
@@ -20,6 +21,8 @@ export default {
       renamed: 'Канал переименован',
       remove: 'Канал удалён',
       name: 'Имя канала',
+      action: 'Действия с каналом',
+      AUS: 'Уверены?',
     },
     login: {
       login: 'Войти',
@@ -41,7 +44,6 @@ export default {
     },
     connectionError: 'Ошибка соединения',
     cancel: 'Отменить',
-    AUS: 'Вы уверены?',
     notFound: 'Страница не найдена',
     CanGo: 'Но вы можете перейти ',
     toMainPage: 'на главную страницу',

@@ -5,15 +5,19 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Stack from 'react-bootstrap/Stack';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { useChatApi } from '../../contexts/index.jsx';
 
-const validationSchema = (channelNames) => Yup.object().shape({
-  channelName: Yup.string().trim()
-    .notOneOf(channelNames, 'Must be unique'),
-});
-
 const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
+  const { t } = useTranslation();
+  const validationSchema = (channelNames) => Yup.object().shape({
+    channelName: Yup.string().trim()
+      .min(3, t('login.symbolCount'))
+      .max(20, t('login.symbolCount'))
+      .required(t('login.requiredFiel'))
+      .notOneOf(channelNames, t('login.unique')),
+  });
   const chatApi = useChatApi();
 
   const inputRef = useRef();
@@ -41,7 +45,7 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
   return (
     <Modal show centered onHide={onHide} keyboard>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать канал</Modal.Title>
+        <Modal.Title>{t('channels.renameChannel')}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -49,7 +53,7 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
           <fieldset disabled={formik.isSubmitting}>
             <Stack gap={2}>
               <Form.Group controlId="formChannelName" className="position-relative">
-                <Form.Label visuallyHidden>Имя канала</Form.Label>
+                <Form.Label visuallyHidden>{t('channels.name')}</Form.Label>
                 <Form.Control
                   ref={inputRef}
                   onChange={formik.handleChange}
@@ -63,8 +67,8 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
                 </Form.Control.Feedback>
               </Form.Group>
               <div className="d-flex justify-content-end">
-                <Button onClick={onHide} variant="secondary" className="me-2">Отменить</Button>
-                <Button type="submit" variant="primary">Отправить</Button>
+                <Button onClick={onHide} variant="secondary" className="me-2">{t('cancel')}</Button>
+                <Button type="submit" variant="primary">{t('messages.send')}</Button>
               </div>
             </Stack>
           </fieldset>
