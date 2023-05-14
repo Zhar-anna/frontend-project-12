@@ -62,13 +62,14 @@ const Add = ({ onHide, channels }) => {
                   data-testid="input-channelName"
                   name="channelName"
                   isInvalid={formik.touched.channelName && formik.errors.channelName}
+                  placeholder={t('channels.name')}
                 />
                 <Form.Control.Feedback type="invalid" tooltip className="position-absolute">
                   {formik.errors.channelName}
                 </Form.Control.Feedback>
               </Form.Group>
               <div className="d-flex justify-content-end">
-                <Button onClick={onHide} variant="secondary" className="me-2">Отменить</Button>
+                <Button onClick={onHide} variant="secondary" className="me-2">{t('cancel')}</Button>
                 <Button type="submit" variant="primary">{t('messages.send')}</Button>
               </div>
             </Stack>
