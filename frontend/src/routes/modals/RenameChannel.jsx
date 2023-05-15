@@ -53,7 +53,7 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
           <fieldset disabled={formik.isSubmitting}>
             <Stack gap={2}>
               <Form.Group controlId="formChannelName" className="position-relative">
-                <Form.Label visuallyHidden>{t('channels.name')}</Form.Label>
+                <Form.Label visuallyHidden htmlFor="renameChannel">{t('channels.name')}</Form.Label>
                 <Form.Control
                   ref={inputRef}
                   onChange={formik.handleChange}
@@ -61,6 +61,7 @@ const Rename = ({ modalInfo: { item: channel }, onHide, channels }) => {
                   data-testid="input-channelName"
                   name="channelName"
                   isInvalid={formik.touched.channelName && formik.errors.channelName}
+                  id="renameChannel"
                 />
                 <Form.Control.Feedback type="invalid" tooltip className="position-absolute">
                   {formik.errors.channelName}
