@@ -54,7 +54,7 @@ const Add = ({ onHide, channels }) => {
           <fieldset disabled={formik.isSubmitting}>
             <Stack gap={2}>
               <Form.Group controlId="formChannelName" className="position-relative">
-                <Form.Label visuallyHidden>{t('channels.channel')}</Form.Label>
+                <Form.Label htmlFor="channelName" visuallyHidden>{t('channels.channel')}</Form.Label>
                 <Form.Control
                   ref={inputRef}
                   onChange={formik.handleChange}
@@ -63,6 +63,7 @@ const Add = ({ onHide, channels }) => {
                   name="channelName"
                   isInvalid={formik.touched.channelName && formik.errors.channelName}
                   placeholder={t('channels.name')}
+                  id="channelName"
                 />
                 <Form.Control.Feedback type="invalid" tooltip className="position-absolute">
                   {formik.errors.channelName}
