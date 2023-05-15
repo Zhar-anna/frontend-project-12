@@ -54,7 +54,7 @@ const Add = ({ onHide, channels }) => {
           <fieldset disabled={formik.isSubmitting}>
             <Stack gap={2}>
               <Form.Group controlId="formChannelName" className="position-relative">
-                <Form.Label htmlFor="channelName" visuallyHidden>{t('channels.channel')}</Form.Label>
+                <Form.Label htmlFor="channelName" visuallyHidden>{t('channels.name')}</Form.Label>
                 <Form.Control
                   ref={inputRef}
                   onChange={formik.handleChange}
