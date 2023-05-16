@@ -57,10 +57,10 @@ const App = () => {
           </Navbar>
           <Routes>
             <Route path="*" element={<ErrorPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path={routes.loginPage} element={<LoginPage />} />
+            <Route path={routes.signupPage} element={<SignupPage />} />
             <Route
-              path="/"
+              path={routes.homePage}
               element={(
                 <PrivateRoute>
                   <ChatPage />

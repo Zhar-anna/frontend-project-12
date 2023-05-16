@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ErrorBoundary, Provider as RollbarProvider } from '@rollbar/react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
+import debug from 'debug';
 import resources from './locales/index.js';
 import App from './App.jsx';
 import { actions as messagesActions } from './slices/MessageSlices.js';
@@ -28,34 +29,33 @@ export default async () => {
       resources,
     });
   const socket = io();
-  console.debug(`Subscribe for socket events (socket.id=${socket.id})`);
+  debug(`Subscribe for socket events (socket.id=${socket.id})`);
   socket
     .on('connect', () => {
-      console.debug(`socket "connect" id=${socket.id}`);
+      debug(`socket "connect" id=${socket.id}`);
     })
     .on('connect', () => {
-      console.debug('socket "connect_error"');
+      debug('socket "connect_error"');
     })
     .on('disconnect', (reason) => {
-      console.debug(`socket "disconnect" (${reason})`);
+      debug(`socket "disconnect" (${reason})`);
     })
 
     .on('newMessage', (payload) => {
-      console.debug('newMessage "event"', payload);
+      debug('newMessage "event"', payload);
       store.dispatch(messagesActions.addMessage(payload));
     })
     .on('newChannel', (payload) => {
-      console.debug('newChannel "event"', payload);
+      debug('newChannel "event"', payload);
       store.dispatch(channelsActions.addChannel(payload));
       toast.info(i18nextInstance.t('channels.created'));
     })
     .on('removeChannel', (payload) => {
-      console.debug('removeChannel "event"', payload);
+      debug('removeChannel "event"', payload);
       store.dispatch(channelsActions.removeChannel(payload.id));
       toast.info(i18nextInstance.t('channels.remove'));
     })
     .on('renameChannel', (payload) => {
-      console.debug('renameChannel "event"', payload);
       const { id, name } = payload;
       store.dispatch(channelsActions.updateChannel({ id, changes: { name } }));
       toast.info(i18nextInstance.t('channels.renamed'));
@@ -73,7 +73,7 @@ export default async () => {
     renameChannel: (...args) => getSocketEmitPromise('renameChannel', ...args),
   };
   const rollbarConfig = {
-    accessToken: '30c8dfe987dc44809bfa1796486cf0a7',
+    accessToken: process.env.REACT_APP_ROLLBAR_TOKEN,
     captureUncaught: true,
     environment: 'production',
   };

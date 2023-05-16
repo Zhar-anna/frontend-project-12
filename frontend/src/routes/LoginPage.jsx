@@ -23,13 +23,11 @@ const useSubmit = (setAuthFailed, t) => {
       if (data.token) {
         const user = { token: data.token, username: data.username };
         logIn(user);
-        localStorage.setItem('userData', JSON.stringify(data.token));
         navigate(routes.homePage);
       }
     } catch (error) {
       if (!error.isAxiosError) {
         toast.error(t('notFoundError'));
-        console.error(error);
       }
       if (error.isAxiosError && error.response?.status === 401) {
         setAuthFailed(true);
