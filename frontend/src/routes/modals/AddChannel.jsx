@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useChatApi } from '../../contexts/index.jsx';
-import { setCurrentChannelId } from '../../slices/currentChannelIdSlice.js';
+import { actions as channelsActions } from '../../slices/channelSlices.js';
 
 const Add = ({ onHide, channels }) => {
   const { t } = useTranslation();
@@ -36,7 +36,7 @@ const Add = ({ onHide, channels }) => {
       console.log(chatApi);
       try {
         const { data: channelWithId } = await chatApi.newChannel({ name: values.channelName });
-        dispatch(setCurrentChannelId(channelWithId.id));
+        dispatch(channelsActions.setCurrentChannelId(channelWithId.id));
         onHide();
       } catch (err) {
         console.error(err);

@@ -6,14 +6,14 @@ import {
   Button, Col, Container, Row, Dropdown, ButtonGroup,
 } from 'react-bootstrap';
 import axios from 'axios';
+import _ from 'lodash';
 import { animateScroll } from 'react-scroll';
 import profanityFilter from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes.js';
 import { useAuth, useChatApi } from '../contexts/index.jsx';
-import { actions as channelsActions, selectors as channelsSelectors } from '../slices/channelSlices.js';
+import { actions as channelsActions } from '../slices/channelSlices.js';
 import { actions as messagesActions, selectors as messagesSelectors } from '../slices/MessageSlices.js';
-import { setCurrentChannelId } from '../slices/currentChannelIdSlice.js';
 import getModal from './modals/index.jsx';
 
 const renderModal = ({ modalInfo, hideModal, channels }) => {
@@ -47,7 +47,7 @@ const LeftCol = ({
               <Button
                 className="w-100 rounded-0 text-start text-truncate"
                 variant={channel.id === currentChannelId && 'secondary'}
-                onClick={() => { dispatch(setCurrentChannelId(channel.id)); }}
+                onClick={() => { dispatch(channelsActions.setCurrentChannelId(channel.id)); }}
               >
                 <span className="me-1">#</span>
                 {channel.name}
@@ -177,11 +177,9 @@ const ChatPage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const channels = useSelector(channelsSelectors.selectAll);
-  const currentChannelId = useSelector((state) => state.currentChannelId.value);
-  const currentChannel = useSelector(
-    (state) => channelsSelectors.selectById(state, currentChannelId),
-  );
+  const { channels, currentChannelId } = useSelector((state) => state.channels);
+  // eslint-disable-next-line max-len
+  const currentChannel = useSelector((state) => _.find(state.channels.channels, ((ch) => ch.id === currentChannelId)));
   const currentChannelMessages = useSelector(messagesSelectors.selectAll)
     .filter(({ channelId }) => channelId === currentChannelId);
   useEffect(() => {
