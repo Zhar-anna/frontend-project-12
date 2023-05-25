@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Stack from 'react-bootstrap/Stack';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import { useChatApi } from '../../contexts/index.jsx';
 import { actions as channelsActions } from '../../slices/channelSlices.js';
@@ -35,13 +36,15 @@ const Add = () => {
     initialValues: { channelName: '' },
     validationSchema: getValidationSchema(channelNames),
     onSubmit: async (values) => {
-      console.log(chatApi);
       try {
-        const { data: channelWithId } = await chatApi.newChannel({ name: values.channelName });
-        dispatch(channelsActions.setCurrentChannelId(channelWithId.id));
+        const responce = await chatApi.newChannel({ name: values.channelName });
+        toast.success(t('channel.created'));
+        dispatch(channelsActions.setCurrentChannelId(responce.data.id));
+        // dispatch(channelsActions.addChannel())
+        console.log(channels);
         dispatch(hideModal());
       } catch (err) {
-        console.error(err);
+        toast.error(t('connectionError'));
       }
     },
   });

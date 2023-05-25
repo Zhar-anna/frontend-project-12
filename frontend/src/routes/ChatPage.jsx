@@ -24,7 +24,11 @@ const LeftCol = ({ t }) => {
     <Col md={2} className="col-4 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
         <span>{t('channels.channels')}</span>
-        <button onClick={() => dispatch(showModal({ modalType: 'newChannel', channelId: null }))} type="button" className="p-0 text-primary btn btn-group-vertical">
+        <button
+          onClick={() => dispatch(showModal({ modalType: 'newChannel', channelId: null }))}
+          type="button"
+          className="p-0 text-primary btn btn-group-vertical"
+        >
           <PlusSquareFill size={20} />
           <span className="visually-hidden">+</span>
         </button>
@@ -168,9 +172,7 @@ const ChatPage = () => {
   const { t } = useTranslation();
 
   const { channels, currentChannelId } = useSelector((state) => state.channels);
-  // eslint-disable-next-line max-len
-  const currentChannel = useSelector(() => _.find(channels, ((ch) => ch.id === currentChannelId)));
-  // console.log(channels[0].id);
+  const currentChannel = _.find(channels, (({ id }) => id === currentChannelId));
   const currentChannelMessages = useSelector(messagesSelectors.selectAll)
     .filter(({ channelId }) => channelId === currentChannelId);
   useEffect(() => {
