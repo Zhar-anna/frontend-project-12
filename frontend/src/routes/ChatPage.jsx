@@ -15,27 +15,16 @@ import { useAuth, useChatApi } from '../contexts/index.jsx';
 import { actions as channelsActions } from '../slices/channelSlices.js';
 import { actions as messagesActions, selectors as messagesSelectors } from '../slices/MessageSlices.js';
 import getModal from './modals/index.jsx';
+import { showModal } from '../slices/modalSlices.js';
 
-const renderModal = ({ modalInfo, hideModal, channels }) => {
-  if (!modalInfo.type) return null;
-  const ModalComponent = getModal(modalInfo.type);
-  return (
-    <ModalComponent
-      modalInfo={modalInfo}
-      onHide={hideModal}
-      channels={channels}
-    />
-  );
-};
-const LeftCol = ({
-  channels, currentChannelId, showModal, t,
-}) => {
+const LeftCol = ({ t }) => {
   const dispatch = useDispatch();
+  const { channels, currentChannelId } = useSelector((state) => state.channels);
   return (
     <Col md={2} className="col-4 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
         <span>{t('channels.channels')}</span>
-        <button onClick={() => showModal('newChannel')} type="button" className="p-0 text-primary btn btn-group-vertical">
+        <button onClick={() => dispatch(showModal({ modalType: 'newChannel', channelId: null }))} type="button" className="p-0 text-primary btn btn-group-vertical">
           <PlusSquareFill size={20} />
           <span className="visually-hidden">+</span>
         </button>
@@ -43,11 +32,10 @@ const LeftCol = ({
       <ul className="nav flex-column nav-pills nav-fill px-2">
         {channels.map((channel) => (
           <li className="nav-item w-100" key={channel.id}>
-            <Dropdown as={ButtonGroup} className="d-flex">
+            <Dropdown onClick={() => { dispatch(channelsActions.setCurrentChannelId(channel.id)); }} as={ButtonGroup} className="d-flex">
               <Button
                 className="w-100 rounded-0 text-start text-truncate"
                 variant={channel.id === currentChannelId && 'secondary'}
-                onClick={() => { dispatch(channelsActions.setCurrentChannelId(channel.id)); }}
               >
                 <span className="me-1">#</span>
                 {channel.name}
@@ -61,10 +49,12 @@ const LeftCol = ({
                 </Dropdown.Toggle>
               )}
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => showModal('removeChannel', channel)}>
+                <Dropdown.Item onClick={() => dispatch(showModal({ modalType: 'removeChannel', channelId: channel.id }))}>
                   {t('channels.delete')}
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => showModal('renameChannel', channel)}>{t('channels.rename')}</Dropdown.Item>
+                <Dropdown.Item onClick={() => dispatch(showModal({ modalType: 'renameChannel', channelId: channel.id }))}>
+                  {t('channels.rename')}
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </li>
@@ -179,7 +169,8 @@ const ChatPage = () => {
 
   const { channels, currentChannelId } = useSelector((state) => state.channels);
   // eslint-disable-next-line max-len
-  const currentChannel = useSelector((state) => _.find(state.channels.channels, ((ch) => ch.id === currentChannelId)));
+  const currentChannel = useSelector(() => _.find(channels, ((ch) => ch.id === currentChannelId)));
+  // console.log(channels[0].id);
   const currentChannelMessages = useSelector(messagesSelectors.selectAll)
     .filter(({ channelId }) => channelId === currentChannelId);
   useEffect(() => {
@@ -196,21 +187,22 @@ const ChatPage = () => {
         else toast.error(t('connectionError'));
       }
     };
-    console.debug('ChatPage fetching content...');
     fetchContent();
   }, [auth, dispatch, t]);
 
-  const [modalInfo, setModalInfo] = useState({ type: null, item: null });
-  const hideModal = () => setModalInfo({ type: null, item: null });
-  const showModal = (type, item = null) => setModalInfo({ type, item });
+  const modalType = useSelector((state) => state.modal.modalType);
+  const renderModal = (type) => {
+    if (!type) {
+      return null;
+    }
+    const Modal = getModal(type);
+    return <Modal />;
+  };
 
   return (
     <Container className="h-100 my-4 overflow-hidden rounded shadow">
       <Row className="h-100 bg-white flex-md-row">
         <LeftCol
-          channels={channels}
-          currentChannelId={currentChannelId}
-          showModal={showModal}
           t={t}
         />
         <RightCol
@@ -220,7 +212,7 @@ const ChatPage = () => {
           t={t}
         />
       </Row>
-      {renderModal({ modalInfo, hideModal, channels })}
+      {renderModal(modalType)}
     </Container>
   );
 };

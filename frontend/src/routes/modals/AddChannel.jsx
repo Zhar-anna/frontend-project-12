@@ -4,16 +4,18 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Stack from 'react-bootstrap/Stack';
-import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
 import { useChatApi } from '../../contexts/index.jsx';
 import { actions as channelsActions } from '../../slices/channelSlices.js';
+import { hideModal } from '../../slices/modalSlices.js';
 
-const Add = ({ onHide, channels }) => {
+const Add = () => {
+  const channels = useSelector((state) => state.channels.channels);
   const { t } = useTranslation();
   const chatApi = useChatApi();
-  console.log(chatApi);
+  // console.log(chatApi);
   const dispatch = useDispatch();
   const getValidationSchema = (channelNames) => Yup.object().shape({
     channelName: Yup.string().trim()
@@ -37,7 +39,7 @@ const Add = ({ onHide, channels }) => {
       try {
         const { data: channelWithId } = await chatApi.newChannel({ name: values.channelName });
         dispatch(channelsActions.setCurrentChannelId(channelWithId.id));
-        onHide();
+        dispatch(hideModal());
       } catch (err) {
         console.error(err);
       }
@@ -45,15 +47,15 @@ const Add = ({ onHide, channels }) => {
   });
 
   return (
-    <Modal show centered onHide={onHide} keyboard>
-      <Modal.Header closeButton>
+    <Modal show centered keyboard>
+      <Modal.Header closeButton onHide={() => dispatch(hideModal())}>
         <Modal.Title>{t('channels.add')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
           <fieldset disabled={formik.isSubmitting}>
             <Stack gap={2}>
-              <Form.Group controlId="formChannelName" className="position-relative">
+              <Form.Group className="position-relative">
                 <Form.Label htmlFor="channelName" visuallyHidden>{t('channels.name')}</Form.Label>
                 <Form.Control
                   ref={inputRef}
@@ -70,8 +72,12 @@ const Add = ({ onHide, channels }) => {
                 </Form.Control.Feedback>
               </Form.Group>
               <div className="d-flex justify-content-end">
-                <Button onClick={onHide} variant="secondary" className="me-2">{t('cancel')}</Button>
-                <Button type="submit" variant="primary">{t('messages.send')}</Button>
+                <Button onClick={() => dispatch(hideModal())} variant="secondary" className="me-2">
+                  {t('cancel')}
+                </Button>
+                <Button type="submit" variant="primary">
+                  {t('messages.send')}
+                </Button>
               </div>
             </Stack>
           </fieldset>

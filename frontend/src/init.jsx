@@ -3,7 +3,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { io } from 'socket.io-client';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ErrorBoundary, Provider as RollbarProvider } from '@rollbar/react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -48,17 +48,14 @@ export default async () => {
     .on('newChannel', (payload) => {
       debug('newChannel "event"', payload);
       store.dispatch(channelsActions.addChannel(payload));
-      toast.info(i18nextInstance.t('channels.created'));
     })
     .on('removeChannel', (payload) => {
       debug('removeChannel "event"', payload);
       store.dispatch(channelsActions.removeChannel(payload.id));
-      toast.info(i18nextInstance.t('channels.remove'));
     })
     .on('renameChannel', (payload) => {
       const { id, name } = payload;
-      store.dispatch(channelsActions.updateChannel({ id, changes: { name } }));
-      toast.info(i18nextInstance.t('channels.renamed'));
+      store.dispatch(channelsActions.renameChannel({ id, name }));
     });
   const getSocketEmitPromise = (...args) => new Promise((resolve, reject) => {
     socket.timeout(socketTimeoutMs).emit(...args, (err, response) => {

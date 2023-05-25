@@ -12,18 +12,6 @@ import avatar from '../images/avatar.jpg';
 import { useAuth } from '../contexts/index.jsx';
 import paths from '../routes.js';
 
-// const validationSchema = Yup.object().shape({
-//   username: Yup.string().trim()
-//     .min(3, 'login.symbolCount')
-//     .max(20, 'login.symbolCount')
-//     .required('login.requiredField'),
-//   password: Yup.string().trim()
-//     .min(6, 'login.minCountSymbols')
-//     .required('CanGo'),
-//   passwordConfirmation: Yup.string()
-//     .oneOf([Yup.ref('password'), null], 'login.matchPassword')
-//     .required('login.requiredField'),
-// });
 const useSubmit = (setSignupFailed, t) => {
   const navigate = useNavigate();
   const { logIn } = useAuth();
