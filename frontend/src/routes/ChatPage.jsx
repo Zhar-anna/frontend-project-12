@@ -185,7 +185,6 @@ const ChatPage = () => {
         dispatch(messagesActions.setMessages(data.messages));
       } catch (err) {
         if (!err.isAxiosError) throw err;
-        console.error(err);
         if (err.response?.status === 401) auth.logOut();
         else toast.error(t('connectionError'));
       }

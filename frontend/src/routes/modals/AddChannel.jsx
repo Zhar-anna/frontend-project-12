@@ -16,7 +16,6 @@ const Add = () => {
   const channels = useSelector((state) => state.channels.channels);
   const { t } = useTranslation();
   const chatApi = useChatApi();
-  // console.log(chatApi);
   const dispatch = useDispatch();
   const getValidationSchema = (channelNames) => Yup.object().shape({
     channelName: Yup.string().trim()
