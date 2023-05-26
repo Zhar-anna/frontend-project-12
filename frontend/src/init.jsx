@@ -51,7 +51,7 @@ export default async () => {
     })
     .on('removeChannel', (payload) => {
       debug('removeChannel "event"', payload);
-      store.dispatch(channelsActions.removeChannel(payload.id));
+      store.dispatch(channelsActions.removeChannel(payload));
     })
     .on('renameChannel', (payload) => {
       const { id, name } = payload;

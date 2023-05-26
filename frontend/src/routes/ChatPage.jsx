@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import routes from '../routes.js';
 import { useAuth, useChatApi } from '../contexts/index.jsx';
 import { actions as channelsActions } from '../slices/channelSlices.js';
-import { actions as messagesActions, selectors as messagesSelectors } from '../slices/MessageSlices.js';
+import { actions as messagesActions } from '../slices/MessageSlices.js';
 import getModal from './modals/index.jsx';
 import { showModal } from '../slices/modalSlices.js';
 
@@ -173,8 +173,9 @@ const ChatPage = () => {
 
   const { channels, currentChannelId } = useSelector((state) => state.channels);
   const currentChannel = _.find(channels, (({ id }) => id === currentChannelId));
-  const currentChannelMessages = useSelector(messagesSelectors.selectAll)
-    .filter(({ channelId }) => channelId === currentChannelId);
+  const messages = useSelector((state) => state.messages.messages);
+  const currentChannelMessages = messages.filter((msg) => msg.channelId === currentChannelId);
+
   useEffect(() => {
     const fetchContent = async () => {
       try {

@@ -38,9 +38,8 @@ const Add = () => {
     onSubmit: async (values) => {
       try {
         const responce = await chatApi.newChannel({ name: values.channelName });
-        toast.success(t('channel.created'));
+        toast.success(t('channels.created'));
         dispatch(channelsActions.setCurrentChannelId(responce.data.id));
-        // dispatch(channelsActions.addChannel())
         console.log(channels);
         dispatch(hideModal());
       } catch (err) {
